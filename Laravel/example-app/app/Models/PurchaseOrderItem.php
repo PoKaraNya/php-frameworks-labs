@@ -3,13 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ *
+ */
 class PurchaseOrderItem extends Model
 {
-    use HasFactory;
+    /**
+     * @var string
+     */
+    protected $table = "purchase_order_items";
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'purchase_order_id',
         'product_id',
@@ -18,7 +26,7 @@ class PurchaseOrderItem extends Model
     ];
 
     /**
-     * Один запис належить закупівельному замовленню
+     * @return BelongsTo
      */
     public function purchaseOrder(): BelongsTo
     {
@@ -26,7 +34,7 @@ class PurchaseOrderItem extends Model
     }
 
     /**
-     * Один запис належить продукту
+     * @return BelongsTo
      */
     public function product(): BelongsTo
     {

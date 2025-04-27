@@ -3,13 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ *
+ */
 class Supplier extends Model
 {
-    use HasFactory;
+    /**
+     * @var string
+     */
+    protected $table = "suppliers";
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'name',
         'contact_name',
@@ -19,7 +27,7 @@ class Supplier extends Model
     ];
 
     /**
-     * Постачальник має багато продуктів
+     * @return HasMany
      */
     public function products(): HasMany
     {
@@ -27,7 +35,7 @@ class Supplier extends Model
     }
 
     /**
-     * Постачальник має багато закупівельних замовлень
+     * @return HasMany
      */
     public function purchaseOrders(): HasMany
     {

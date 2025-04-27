@@ -252,6 +252,11 @@
       <excludeFolder url="file://$MODULE_DIR$/my_project_directory/vendor/twig/extra-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/my_project_directory/vendor/twig/twig" />
       <excludeFolder url="file://$MODULE_DIR$/my_project_directory/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/doctrine/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/doctrine/dbal" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/doctrine/deprecations" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/doctrine/event-manager" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/psr/cache" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

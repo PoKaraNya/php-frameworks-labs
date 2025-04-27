@@ -2,135 +2,133 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Product;
+use App\Repository\ProductRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\SupplierRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/api/v1')]
-final class ProductController extends AbstractController
+#[Route('/product', name: 'product_routes')]
+class ProductController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+    private ProductRepository $productRepository;
+    private CategoryRepository $categoryRepository;
+    private SupplierRepository $supplierRepository;
 
-    public const PRODUCTS = [
-        [
-            'id'          => '4263ed5c-8d78-4b65-99d3-059321ca5629',
-            'name'        => 'product1',
-            'description' => 'description1',
-            'price'       => '100'
-        ],
-        [
-            'id'          => '9897dc23-e6e6-47f5-bc20-daa776256ece',
-            'name'        => 'product2',
-            'description' => 'description2',
-            'price'       => '200'
-        ],
-        [
-            'id'          => '3992b376-1867-4076-94e6-cd7612bb690a',
-            'name'        => 'product3',
-            'description' => 'description3',
-            'price'       => '300'
-        ]
-    ];
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ProductRepository $productRepository,
+        CategoryRepository $categoryRepository,
+        SupplierRepository $supplierRepository
+    ) {
+        $this->entityManager = $entityManager;
+        $this->productRepository = $productRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->supplierRepository = $supplierRepository;
+    }
 
-    /**
-     * @return JsonResponse
-     */
-    #[Route('/products', name: 'get_products', methods: [Request::METHOD_GET])]
+    #[Route('/', name: 'get_products', methods: ['GET'])]
     public function getProducts(): JsonResponse
     {
-        return new JsonResponse(['data' => self::PRODUCTS], Response::HTTP_OK);
+        $products = $this->productRepository->findAll();
+        $data = array_map(fn(Product $product) => $product->jsonSerialize(), $products);
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 
-    /**
-     * @param string $id
-     * @return JsonResponse
-     */
-    #[Route('/products/{id}', name: 'get_product_item', methods: [Request::METHOD_GET])]
-    public function getProductItem(string $id): JsonResponse
-    {
-        $product = $this->getProductItemById(self::PRODUCTS, $id);
-
-        if (!$product) {
-            return new JsonResponse(['data' => ['error' => 'Not found product by id ' . $id]], Response::HTTP_NOT_FOUND);
-        }
-
-        return new JsonResponse(['data' => $product], Response::HTTP_OK);
-    }
-
-    #[Route('/products', name: 'post_products', methods: [Request::METHOD_POST])]
+    #[Route('/', name: 'create_product', methods: ['POST'])]
     public function createProduct(Request $request): JsonResponse
     {
-        $requestData = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true);
 
-        $productId = random_int(1, 100);
+        $category = $this->categoryRepository->find($data['categoryId'] ?? null);
+        $supplier = $this->supplierRepository->find($data['supplierId'] ?? null);
 
-        $newProductData = [
-            'id'          => $productId,
-            'name'        => $requestData['name'],
-            'description' => $requestData['description'],
-            'price'       => $requestData['price']
-        ];
-
-        // TODO insert to db
-
-        return new JsonResponse([
-            'data' => $newProductData
-        ], Response::HTTP_CREATED);
-    }
-
-    #[Route('/products/{id}', name: 'patch_products', methods: [Request::METHOD_PATCH])]
-    public function updateProduct(string $id, Request $request): JsonResponse
-    {
-        $product = $this->getProductItemById(self::PRODUCTS, $id);
-
-        if (!$product) {
-            return new JsonResponse(['data' => ['error' => 'Not found product by id ' . $id]], Response::HTTP_NOT_FOUND);
+        if (!$category || !$supplier) {
+            return new JsonResponse(['message' => 'Invalid category or supplier.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $requestData = json_decode($request->getContent(), true);
+        $product = new Product();
+        $product->setName($data['name'] ?? '');
+        $product->setDescription($data['description'] ?? '');
+        $product->setPrice($data['price'] ?? 0);
+        $product->setCategory($category);
+        $product->setSupplier($supplier);
 
-        $product['name'] = $requestData['name'];
-        $product['description'] = $requestData['description'];
-        $product['price'] = $requestData['price'];
+        $this->entityManager->persist($product);
+        $this->entityManager->flush();
 
-        // TODO insert to db
-
-        return new JsonResponse([
-            'data' => $product
-        ], Response::HTTP_OK);
+        return new JsonResponse($product->jsonSerialize(), Response::HTTP_CREATED);
     }
 
-    #[Route('/products/{id}', name: 'delete_products', methods: [Request::METHOD_DELETE])]
-    public function deleteProduct(string $id): JsonResponse
+    #[Route('/{id}', name: 'get_product', methods: ['GET'])]
+    public function getProduct(int $id): JsonResponse
     {
-        $product = $this->getProductItemById(self::PRODUCTS, $id);
+        $product = $this->productRepository->find($id);
 
         if (!$product) {
-            return new JsonResponse(['data' => ['error' => 'Not found product by id ' . $id]], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'Product not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // TODO remove from db
-
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse($product->jsonSerialize(), Response::HTTP_OK);
     }
 
-    /**
-     * @param array $products
-     * @param string $id
-     * @return array|null
-     */
-    public function getProductItemById(array $products, string $id): ?array
+    #[Route('/{id}', name: 'update_product', methods: ['PATCH'])]
+    public function updateProduct(Request $request, int $id): JsonResponse
     {
-        foreach ($products as $product) {
-            if ($product['id'] != $id) {
-                continue;
+        $product = $this->productRepository->find($id);
+
+        if (!$product) {
+            return new JsonResponse(['message' => 'Product not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['name'])) {
+            $product->setName($data['name']);
+        }
+        if (isset($data['description'])) {
+            $product->setDescription($data['description']);
+        }
+        if (isset($data['price'])) {
+            $product->setPrice($data['price']);
+        }
+        if (isset($data['categoryId'])) {
+            $category = $this->categoryRepository->find($data['categoryId']);
+            if ($category) {
+                $product->setCategory($category);
             }
-
-            return $product;
+        }
+        if (isset($data['supplierId'])) {
+            $supplier = $this->supplierRepository->find($data['supplierId']);
+            if ($supplier) {
+                $product->setSupplier($supplier);
+            }
         }
 
-        return null;
+        $this->entityManager->flush();
+
+        return new JsonResponse($product->jsonSerialize(), Response::HTTP_OK);
     }
 
+    #[Route('/{id}', name: 'delete_product', methods: ['DELETE'])]
+    public function deleteProduct(int $id): JsonResponse
+    {
+        $product = $this->productRepository->find($id);
+
+        if (!$product) {
+            return new JsonResponse(['message' => 'Product not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $this->entityManager->remove($product);
+        $this->entityManager->flush();
+
+        return new JsonResponse(['message' => 'Product deleted successfully'], Response::HTTP_OK);
+    }
 }

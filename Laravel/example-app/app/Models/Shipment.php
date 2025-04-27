@@ -3,13 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ *
+ */
 class Shipment extends Model
 {
-    use HasFactory;
+    /**
+     * @var string
+     */
+    protected $table = "shipments";
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'order_id',
         'shipment_date',
@@ -17,13 +25,16 @@ class Shipment extends Model
         'status',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'shipment_date' => 'datetime',
         'delivery_date' => 'datetime',
     ];
 
     /**
-     * Відвантаження належить замовленню
+     * @return BelongsTo
      */
     public function order(): BelongsTo
     {

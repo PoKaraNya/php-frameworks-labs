@@ -1,36 +1,35 @@
-
 services:
 ###> doctrine/doctrine-bundle ###
-  warehouse-symfony-db:
+  warehouse-laravel-db:
     platform: linux/amd64
     image: mysql:5.7
     volumes:
-      - warehouse-db-symfony-data:/var/lib/mysql
+      - warehouse-db-laravel-data:/var/lib/mysql
     restart: always
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: warehouse-symfony-db
+      MYSQL_DATABASE: warehouse-laravel-db
       MYSQL_PASSWORD: password
     networks:
-      - warehouse-symfony-net
+      - warehouse-laravel-net
 
-  warehouse-symfony-phpmyadmin:
+  warehouse-laravel-phpmyadmin:
     depends_on:
-      - warehouse-symfony-db
+      - warehouse-laravel-db
     image: phpmyadmin
     restart: always
     ports:
       - "8090:80"
     environment:
-      PMA_HOST: warehouse-symfony-db
+      PMA_HOST: warehouse-laravel-db
       MYSQL_ROOT_PASSWORD: password
     networks:
-      - warehouse-symfony-net
+      - warehouse-laravel-net
 
 networks:
-  warehouse-symfony-net:
+  warehouse-laravel-net:
 
 volumes:
-  warehouse-db-symfony-data:
+  warehouse-db-laravel-data:

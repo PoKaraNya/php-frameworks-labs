@@ -3,26 +3,37 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ *
+ */
 class PurchaseOrder extends Model
 {
-    use HasFactory;
+    /**
+     * @var string
+     */
+    protected $table = "purchase_orders";
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'supplier_id',
         'order_date',
         'status',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'order_date' => 'datetime',
     ];
 
     /**
-     * Закупівельне замовлення належить постачальнику
+     * @return BelongsTo
      */
     public function supplier(): BelongsTo
     {
@@ -30,7 +41,7 @@ class PurchaseOrder extends Model
     }
 
     /**
-     * Закупівельне замовлення має багато позицій
+     * @return HasMany
      */
     public function purchaseOrderItems(): HasMany
     {

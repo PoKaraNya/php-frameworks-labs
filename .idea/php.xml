@@ -254,6 +254,11 @@
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/sebastian/code-unit-reverse-lookup" />
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/sebastian/global-state" />
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/psr/cache" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/doctrine/event-manager" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/doctrine/cache" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/doctrine/deprecations" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/doctrine/dbal" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">

@@ -3,14 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ *
+ */
 class Product extends Model
 {
-    use HasFactory;
+    /**
+     * @var string
+     */
+    protected $table = "products";
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'name',
         'description',
@@ -20,7 +28,7 @@ class Product extends Model
     ];
 
     /**
-     * Продукт належить категорії
+     * @return BelongsTo
      */
     public function category(): BelongsTo
     {
@@ -28,7 +36,7 @@ class Product extends Model
     }
 
     /**
-     * Продукт належить постачальнику
+     * @return BelongsTo
      */
     public function supplier(): BelongsTo
     {
@@ -36,7 +44,7 @@ class Product extends Model
     }
 
     /**
-     * Продукт має багато записів інвентаря
+     * @return HasMany
      */
     public function inventories(): HasMany
     {
@@ -44,7 +52,7 @@ class Product extends Model
     }
 
     /**
-     * Продукт має багато позицій у замовленнях
+     * @return HasMany
      */
     public function orderItems(): HasMany
     {
@@ -52,7 +60,7 @@ class Product extends Model
     }
 
     /**
-     * Продукт має багато позицій у закупівельних замовленнях
+     * @return HasMany
      */
     public function purchaseOrderItems(): HasMany
     {

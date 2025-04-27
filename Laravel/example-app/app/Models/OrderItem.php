@@ -3,13 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ *
+ */
 class OrderItem extends Model
 {
-    use HasFactory;
+    /**
+     * @var string
+     */
+    protected $table = "order_items";
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'order_id',
         'product_id',
@@ -18,7 +26,7 @@ class OrderItem extends Model
     ];
 
     /**
-     * OrderItem належить до Order
+     * @return BelongsTo
      */
     public function order(): BelongsTo
     {
@@ -26,7 +34,7 @@ class OrderItem extends Model
     }
 
     /**
-     * OrderItem належить до Product
+     * @return BelongsTo
      */
     public function product(): BelongsTo
     {
