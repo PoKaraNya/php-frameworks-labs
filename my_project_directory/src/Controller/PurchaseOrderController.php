@@ -12,13 +12,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *
+ */
 #[Route('/purchase-order', name: 'purchase_order_routes')]
 class PurchaseOrderController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var PurchaseOrderRepository
+     */
     private PurchaseOrderRepository $purchaseOrderRepository;
+    /**
+     * @var SupplierRepository
+     */
     private SupplierRepository $supplierRepository;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param PurchaseOrderRepository $purchaseOrderRepository
+     * @param SupplierRepository $supplierRepository
+     */
     public function __construct(EntityManagerInterface $entityManager, PurchaseOrderRepository $purchaseOrderRepository, SupplierRepository $supplierRepository)
     {
         $this->entityManager = $entityManager;
@@ -26,6 +43,9 @@ class PurchaseOrderController extends AbstractController
         $this->supplierRepository = $supplierRepository;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_purchase_orders', methods: ['GET'])]
     public function getPurchaseOrders(): JsonResponse
     {
@@ -35,6 +55,11 @@ class PurchaseOrderController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \DateMalformedStringException
+     */
     #[Route('/', name: 'create_purchase_order', methods: ['POST'])]
     public function createPurchaseOrder(Request $request): JsonResponse
     {
@@ -56,6 +81,10 @@ class PurchaseOrderController extends AbstractController
         return new JsonResponse($purchaseOrder->jsonSerialize(), Response::HTTP_CREATED);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_purchase_order', methods: ['GET'])]
     public function getPurchaseOrder(int $id): JsonResponse
     {
@@ -68,6 +97,12 @@ class PurchaseOrderController extends AbstractController
         return new JsonResponse($purchaseOrder->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     * @throws \DateMalformedStringException
+     */
     #[Route('/{id}', name: 'update_purchase_order', methods: ['PATCH'])]
     public function updatePurchaseOrder(Request $request, int $id): JsonResponse
     {
@@ -97,6 +132,10 @@ class PurchaseOrderController extends AbstractController
         return new JsonResponse($purchaseOrder->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_purchase_order', methods: ['DELETE'])]
     public function deletePurchaseOrder(int $id): JsonResponse
     {

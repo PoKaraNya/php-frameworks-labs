@@ -12,13 +12,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *
+ */
 #[Route('/inventory', name: 'inventory_routes')]
 class InventoryController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var InventoryRepository
+     */
     private InventoryRepository $inventoryRepository;
+    /**
+     * @var ProductRepository
+     */
     private ProductRepository $productRepository;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param InventoryRepository $inventoryRepository
+     * @param ProductRepository $productRepository
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         InventoryRepository $inventoryRepository,
@@ -29,6 +46,9 @@ class InventoryController extends AbstractController
         $this->productRepository = $productRepository;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_inventories', methods: ['GET'])]
     public function getInventories(): JsonResponse
     {
@@ -38,6 +58,11 @@ class InventoryController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \DateMalformedStringException
+     */
     #[Route('/', name: 'create_inventory', methods: ['POST'])]
     public function createInventory(Request $request): JsonResponse
     {
@@ -59,6 +84,10 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory->jsonSerialize(), Response::HTTP_CREATED);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_inventory', methods: ['GET'])]
     public function getInventory(int $id): JsonResponse
     {
@@ -71,6 +100,12 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     * @throws \DateMalformedStringException
+     */
     #[Route('/{id}', name: 'update_inventory', methods: ['PATCH'])]
     public function updateInventory(Request $request, int $id): JsonResponse
     {
@@ -100,6 +135,10 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_inventory', methods: ['DELETE'])]
     public function deleteInventory(int $id): JsonResponse
     {

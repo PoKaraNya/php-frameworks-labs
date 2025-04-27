@@ -11,18 +11,34 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *
+ */
 #[Route('/customer', name: 'customer_routes')]
 class CustomerController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var CustomerRepository
+     */
     private CustomerRepository $customerRepository;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param CustomerRepository $customerRepository
+     */
     public function __construct(EntityManagerInterface $entityManager, CustomerRepository $customerRepository)
     {
         $this->entityManager = $entityManager;
         $this->customerRepository = $customerRepository;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_customers', methods: ['GET'])]
     public function getCustomers(): JsonResponse
     {
@@ -32,6 +48,10 @@ class CustomerController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_customer', methods: ['POST'])]
     public function createCustomer(Request $request): JsonResponse
     {
@@ -49,6 +69,10 @@ class CustomerController extends AbstractController
         return new JsonResponse($customer->jsonSerialize(), Response::HTTP_CREATED);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_customer', methods: ['GET'])]
     public function getCustomer(int $id): JsonResponse
     {
@@ -61,6 +85,11 @@ class CustomerController extends AbstractController
         return new JsonResponse($customer->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_customer', methods: ['PATCH'])]
     public function updateCustomer(Request $request, int $id): JsonResponse
     {
@@ -90,6 +119,10 @@ class CustomerController extends AbstractController
         return new JsonResponse($customer->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_customer', methods: ['DELETE'])]
     public function deleteCustomer(int $id): JsonResponse
     {

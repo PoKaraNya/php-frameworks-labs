@@ -11,18 +11,34 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *
+ */
 #[Route('/category', name: 'category_routes')]
 class CategoryController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var CategoryRepository
+     */
     private CategoryRepository $categoryRepository;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param CategoryRepository $categoryRepository
+     */
     public function __construct(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository)
     {
         $this->entityManager = $entityManager;
         $this->categoryRepository = $categoryRepository;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_categories', methods: ['GET'])]
     public function getCategories(): JsonResponse
     {
@@ -31,6 +47,10 @@ class CategoryController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_category', methods: ['POST'])]
     public function createCategory(Request $request): JsonResponse
     {
@@ -46,6 +66,10 @@ class CategoryController extends AbstractController
         return new JsonResponse($category->jsonSerialize(), Response::HTTP_CREATED);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_category', methods: ['GET'])]
     public function getCategory(int $id): JsonResponse
     {
@@ -58,6 +82,11 @@ class CategoryController extends AbstractController
         return new JsonResponse($category->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_category', methods: ['PATCH'])]
     public function updateCategory(Request $request, int $id): JsonResponse
     {
@@ -82,6 +111,10 @@ class CategoryController extends AbstractController
         return new JsonResponse($category->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_category', methods: ['DELETE'])]
     public function deleteCategory(int $id): JsonResponse
     {

@@ -12,13 +12,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *
+ */
 #[Route('/shipment', name: 'shipment_routes')]
 class ShipmentController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var ShipmentRepository
+     */
     private ShipmentRepository $shipmentRepository;
+    /**
+     * @var OrderRepository
+     */
     private OrderRepository $orderRepository;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ShipmentRepository $shipmentRepository
+     * @param OrderRepository $orderRepository
+     */
     public function __construct(EntityManagerInterface $entityManager, ShipmentRepository $shipmentRepository, OrderRepository $orderRepository)
     {
         $this->entityManager = $entityManager;
@@ -26,6 +43,9 @@ class ShipmentController extends AbstractController
         $this->orderRepository = $orderRepository;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_shipments', methods: ['GET'])]
     public function getShipments(): JsonResponse
     {
@@ -35,6 +55,11 @@ class ShipmentController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \DateMalformedStringException
+     */
     #[Route('/', name: 'create_shipment', methods: ['POST'])]
     public function createShipment(Request $request): JsonResponse
     {
@@ -57,6 +82,10 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment->jsonSerialize(), Response::HTTP_CREATED);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_shipment', methods: ['GET'])]
     public function getShipment(int $id): JsonResponse
     {
@@ -69,6 +98,12 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     * @throws \DateMalformedStringException
+     */
     #[Route('/{id}', name: 'update_shipment', methods: ['PATCH'])]
     public function updateShipment(Request $request, int $id): JsonResponse
     {
@@ -101,6 +136,10 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_shipment', methods: ['DELETE'])]
     public function deleteShipment(int $id): JsonResponse
     {

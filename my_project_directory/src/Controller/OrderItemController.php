@@ -13,14 +13,35 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *
+ */
 #[Route('/order-item', name: 'order_item_routes')]
 class OrderItemController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var OrderItemRepository
+     */
     private OrderItemRepository $orderItemRepository;
+    /**
+     * @var OrderRepository
+     */
     private OrderRepository $orderRepository;
+    /**
+     * @var ProductRepository
+     */
     private ProductRepository $productRepository;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param OrderItemRepository $orderItemRepository
+     * @param OrderRepository $orderRepository
+     * @param ProductRepository $productRepository
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         OrderItemRepository $orderItemRepository,
@@ -33,6 +54,9 @@ class OrderItemController extends AbstractController
         $this->productRepository = $productRepository;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_order_items', methods: ['GET'])]
     public function getOrderItems(): JsonResponse
     {
@@ -42,6 +66,10 @@ class OrderItemController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_order_item', methods: ['POST'])]
     public function createOrderItem(Request $request): JsonResponse
     {
@@ -66,6 +94,10 @@ class OrderItemController extends AbstractController
         return new JsonResponse($orderItem->jsonSerialize(), Response::HTTP_CREATED);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_order_item', methods: ['GET'])]
     public function getOrderItem(int $id): JsonResponse
     {
@@ -78,6 +110,11 @@ class OrderItemController extends AbstractController
         return new JsonResponse($orderItem->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_order_item', methods: ['PATCH'])]
     public function updateOrderItem(Request $request, int $id): JsonResponse
     {
@@ -113,6 +150,10 @@ class OrderItemController extends AbstractController
         return new JsonResponse($orderItem->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_order_item', methods: ['DELETE'])]
     public function deleteOrderItem(int $id): JsonResponse
     {

@@ -13,14 +13,35 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *
+ */
 #[Route('/product', name: 'product_routes')]
 class ProductController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var ProductRepository
+     */
     private ProductRepository $productRepository;
+    /**
+     * @var CategoryRepository
+     */
     private CategoryRepository $categoryRepository;
+    /**
+     * @var SupplierRepository
+     */
     private SupplierRepository $supplierRepository;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ProductRepository $productRepository
+     * @param CategoryRepository $categoryRepository
+     * @param SupplierRepository $supplierRepository
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         ProductRepository $productRepository,
@@ -33,6 +54,9 @@ class ProductController extends AbstractController
         $this->supplierRepository = $supplierRepository;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_products', methods: ['GET'])]
     public function getProducts(): JsonResponse
     {
@@ -42,6 +66,10 @@ class ProductController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_product', methods: ['POST'])]
     public function createProduct(Request $request): JsonResponse
     {
@@ -67,6 +95,10 @@ class ProductController extends AbstractController
         return new JsonResponse($product->jsonSerialize(), Response::HTTP_CREATED);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_product', methods: ['GET'])]
     public function getProduct(int $id): JsonResponse
     {
@@ -79,6 +111,11 @@ class ProductController extends AbstractController
         return new JsonResponse($product->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_product', methods: ['PATCH'])]
     public function updateProduct(Request $request, int $id): JsonResponse
     {
@@ -117,6 +154,10 @@ class ProductController extends AbstractController
         return new JsonResponse($product->jsonSerialize(), Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_product', methods: ['DELETE'])]
     public function deleteProduct(int $id): JsonResponse
     {
