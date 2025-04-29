@@ -257,6 +257,9 @@
       <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/doctrine/deprecations" />
       <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/doctrine/event-manager" />
       <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/psr/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/lcobucci/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/lcobucci/jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/tymon/jwt-auth" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

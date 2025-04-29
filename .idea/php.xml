@@ -264,6 +264,9 @@
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/doctrine/cache" />
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/doctrine/deprecations" />
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/doctrine/dbal" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/tymon/jwt-auth" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/lcobucci/clock" />
+      <path value="$PROJECT_DIR$/Laravel/example-app/vendor/lcobucci/jwt" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">
