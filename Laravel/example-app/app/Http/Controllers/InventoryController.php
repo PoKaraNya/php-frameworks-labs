@@ -2,25 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inventory;
-use Illuminate\Http\Request;
+use App\Repositories\InventoryRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
-    /**
-     * Display a listing of the inventories.
-     *
-     * @return JsonResponse
-     */
-    public function index(): JsonResponse
+    public const ITEMS_PER_PAGE = 2;
+
+    private InventoryRepository $repo;
+
+    public function __construct(InventoryRepository $repo)
     {
-        $inventories = Inventory::with('product')->get();
-        return response()->json($inventories, Response::HTTP_OK);
+        $this->repo = $repo;
     }
 
     /**
+     * Display a listing of the inventories with pagination.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $filters = $request->only(['product_id', 'quantity', 'last_updated']);
+        $perPage = (int) $request->query('itemsPerPage', self::ITEMS_PER_PAGE);
+        $page    = (int) $request->query('page', 1);
+
+        $data = $this->repo->getAllByFilter($filters, $perPage, $page);
+
+        return response()->json($data, JsonResponse::HTTP_OK);
+    }
+
+/**
      * Store a newly created inventory.
      *
      * @param Request $request

@@ -2,25 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the products.
-     *
-     * @return JsonResponse
-     */
-    public function index(): JsonResponse
+    public const ITEMS_PER_PAGE = 2;
+
+    private ProductRepository $repo;
+
+    public function __construct(ProductRepository $repo)
     {
-        $products = Product::all();
-        return response()->json($products, Response::HTTP_OK);
+        $this->repo = $repo;
     }
 
     /**
+     * Display a listing of the products with pagination.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $filters = $request->only([
+            'name',
+            'description',
+            'price',
+            'category_id',
+            'supplier_id'
+        ]);
+
+        $perPage = (int) $request->query('itemsPerPage', self::ITEMS_PER_PAGE);
+        $page    = (int) $request->query('page', 1);
+
+        $data = $this->repo->getAllByFilter($filters, $perPage, $page);
+
+        return response()->json($data, JsonResponse::HTTP_OK);
+    }
+
+/**
      * Store a newly created product.
      *
      * @param Request $request

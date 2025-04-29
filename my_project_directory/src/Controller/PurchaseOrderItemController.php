@@ -19,6 +19,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/purchase-order-item', name: 'purchase_order_item_routes')]
 class PurchaseOrderItemController extends AbstractController
 {
+    public const ITEMS_PER_PAGE = 2;
+
     /**
      * @var EntityManagerInterface
      */
@@ -55,13 +57,17 @@ class PurchaseOrderItemController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_purchase_order_items', methods: ['GET'])]
-    public function getPurchaseOrderItems(): JsonResponse
+    public function getPurchaseOrderItems(Request $request): JsonResponse
     {
-        $purchaseOrderItems = $this->purchaseOrderItemRepository->findAll();
-        $data = array_map(fn(PurchaseOrderItem $item) => $item->jsonSerialize(), $purchaseOrderItems);
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : self::ITEMS_PER_PAGE;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
+
+        $data = $this->purchaseOrderItemRepository->getAllByFilter($requestData, $itemsPerPage, $page);
 
         return new JsonResponse($data, Response::HTTP_OK);
     }

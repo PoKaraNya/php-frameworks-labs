@@ -2,25 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Supplier;
-use Illuminate\Http\Request;
+use App\Repositories\SupplierRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the suppliers.
-     *
-     * @return JsonResponse
-     */
-    public function index(): JsonResponse
+    public const ITEMS_PER_PAGE = 2;
+
+    private SupplierRepository $repo;
+
+    public function __construct(SupplierRepository $repo)
     {
-        $suppliers = Supplier::all();
-        return response()->json($suppliers, Response::HTTP_OK);
+        $this->repo = $repo;
     }
 
     /**
+     * Display a listing of the suppliers with pagination.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $filters = $request->only([
+            'name',
+            'contact_name',
+            'contact_phone',
+            'contact_email',
+            'address'
+        ]);
+
+        $perPage = (int) $request->query('itemsPerPage', self::ITEMS_PER_PAGE);
+        $page    = (int) $request->query('page', 1);
+
+        $data = $this->repo->getAllByFilter($filters, $perPage, $page);
+
+        return response()->json($data, JsonResponse::HTTP_OK);
+    }
+
+/**
      * Store a newly created supplier.
      *
      * @param Request $request

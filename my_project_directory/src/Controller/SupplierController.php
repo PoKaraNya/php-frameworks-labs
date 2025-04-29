@@ -17,6 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/supplier', name: 'supplier_routes')]
 class SupplierController extends AbstractController
 {
+    public const ITEMS_PER_PAGE = 2;
+
     /**
      * @var EntityManagerInterface
      */
@@ -37,13 +39,17 @@ class SupplierController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_suppliers', methods: ['GET'])]
-    public function getSuppliers(): JsonResponse
+    public function getSuppliers(Request $request): JsonResponse
     {
-        $suppliers = $this->supplierRepository->findAll();
-        $data = array_map(fn(Supplier $supplier) => $supplier->jsonSerialize(), $suppliers);
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : self::ITEMS_PER_PAGE;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
+
+        $data = $this->supplierRepository->getAllByFilter($requestData, $itemsPerPage, $page);
 
         return new JsonResponse($data, Response::HTTP_OK);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -10,15 +11,30 @@ use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
+    public const ITEMS_PER_PAGE = 2;
+
+    private CategoryRepository $repo;
+
+    public function __construct(CategoryRepository $repo)
+    {
+        $this->repo = $repo;
+    }
+
     /**
-     * Display a listing of the categories.
+     * Display a listing of the categories with pagination.
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $categories = Category::all();
-        return response()->json($categories, Response::HTTP_OK);
+        $filters = $request->only(['name', 'description']);
+        $perPage = (int) $request->query('itemsPerPage', self::ITEMS_PER_PAGE);
+        $page    = (int) $request->query('page', 1);
+
+        $data = $this->repo->getAllByFilter($filters, $perPage, $page);
+
+        return response()->json($data, JsonResponse::HTTP_OK);
     }
 
     /**

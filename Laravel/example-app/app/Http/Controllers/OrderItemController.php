@@ -2,25 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderItem;
-use Illuminate\Http\Request;
+use App\Repositories\OrderItemRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class OrderItemController extends Controller
 {
-    /**
-     * Display a listing of the order items.
-     *
-     * @return JsonResponse
-     */
-    public function index(): JsonResponse
+    public const ITEMS_PER_PAGE = 2;
+
+    private OrderItemRepository $repo;
+
+    public function __construct(OrderItemRepository $repo)
     {
-        $orderItems = OrderItem::all();
-        return response()->json($orderItems, Response::HTTP_OK);
+        $this->repo = $repo;
     }
 
     /**
+     * Display a listing of the order items with pagination.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $filters = $request->only(['order_id', 'product_id', 'quantity', 'price_per_unit']);
+        $perPage = (int) $request->query('itemsPerPage', self::ITEMS_PER_PAGE);
+        $page    = (int) $request->query('page', 1);
+
+        $data = $this->repo->getAllByFilter($filters, $perPage, $page);
+
+        return response()->json($data, JsonResponse::HTTP_OK);
+    }
+
+/**
      * Store a newly created order item.
      *
      * @param Request $request

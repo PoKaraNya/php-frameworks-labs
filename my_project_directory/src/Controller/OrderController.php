@@ -18,6 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/order', name: 'order_routes')]
 class OrderController extends AbstractController
 {
+    public const ITEMS_PER_PAGE = 2;
+
     /**
      * @var EntityManagerInterface
      */
@@ -44,13 +46,17 @@ class OrderController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_orders', methods: ['GET'])]
-    public function getOrders(): JsonResponse
+    public function getOrders(Request $request): JsonResponse
     {
-        $orders = $this->orderRepository->findAll();
-        $data = array_map(fn(Order $order) => $order->jsonSerialize(), $orders);
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : self::ITEMS_PER_PAGE;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
+
+        $data = $this->orderRepository->getAllByFilter($requestData, $itemsPerPage, $page);
 
         return new JsonResponse($data, Response::HTTP_OK);
     }

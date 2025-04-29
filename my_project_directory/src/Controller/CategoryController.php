@@ -17,6 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/category', name: 'category_routes')]
 class CategoryController extends AbstractController
 {
+    public const ITEMS_PER_PAGE = 2;
+
     /**
      * @var EntityManagerInterface
      */
@@ -37,13 +39,18 @@ class CategoryController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_categories', methods: ['GET'])]
-    public function getCategories(): JsonResponse
+    public function getCategories(Request $request): JsonResponse
     {
-        $categories = $this->categoryRepository->findAll();
-        $data = array_map(fn(Category $category) => $category->jsonSerialize(), $categories);
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : self::ITEMS_PER_PAGE;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
+
+        $data = $this->categoryRepository->getAllByFilter($requestData, $itemsPerPage, $page);
+
         return new JsonResponse($data, Response::HTTP_OK);
     }
 

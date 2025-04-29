@@ -18,6 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/shipment', name: 'shipment_routes')]
 class ShipmentController extends AbstractController
 {
+    public const ITEMS_PER_PAGE = 2;
+
     /**
      * @var EntityManagerInterface
      */
@@ -44,13 +46,17 @@ class ShipmentController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_shipments', methods: ['GET'])]
-    public function getShipments(): JsonResponse
+    public function getShipments(Request $request): JsonResponse
     {
-        $shipments = $this->shipmentRepository->findAll();
-        $data = array_map(fn(Shipment $shipment) => $shipment->jsonSerialize(), $shipments);
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : self::ITEMS_PER_PAGE;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
+
+        $data = $this->shipmentRepository->getAllByFilter($requestData, $itemsPerPage, $page);
 
         return new JsonResponse($data, Response::HTTP_OK);
     }

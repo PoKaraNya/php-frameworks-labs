@@ -17,6 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/customer', name: 'customer_routes')]
 class CustomerController extends AbstractController
 {
+    public const ITEMS_PER_PAGE = 2;
+
     /**
      * @var EntityManagerInterface
      */
@@ -37,13 +39,17 @@ class CustomerController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_customers', methods: ['GET'])]
-    public function getCustomers(): JsonResponse
+    public function getCustomers(Request $request): JsonResponse
     {
-        $customers = $this->customerRepository->findAll();
-        $data = array_map(fn(Customer $customer) => $customer->jsonSerialize(), $customers);
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : self::ITEMS_PER_PAGE;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
+
+        $data = $this->customerRepository->getAllByFilter($requestData, $itemsPerPage, $page);
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
