@@ -11,11 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  *
  */
-#[Route('/inventory', name: 'inventory_routes')]
+#[Route('api/inventory', name: 'inventory_routes')]
 class InventoryController extends AbstractController
 {
     public const ITEMS_PER_PAGE = 2;
@@ -52,6 +53,7 @@ class InventoryController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_USER")]
     #[Route('/', name: 'get_inventories', methods: ['GET'])]
     public function getInventories(Request $request): JsonResponse
     {
@@ -69,6 +71,7 @@ class InventoryController extends AbstractController
      * @return JsonResponse
      * @throws \DateMalformedStringException
      */
+    #[IsGranted("ROLE_MANAGER")]
     #[Route('/', name: 'create_inventory', methods: ['POST'])]
     public function createInventory(Request $request): JsonResponse
     {
@@ -94,6 +97,7 @@ class InventoryController extends AbstractController
      * @param int $id
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_USER")]
     #[Route('/{id}', name: 'get_inventory', methods: ['GET'])]
     public function getInventory(int $id): JsonResponse
     {
@@ -112,6 +116,7 @@ class InventoryController extends AbstractController
      * @return JsonResponse
      * @throws \DateMalformedStringException
      */
+    #[IsGranted("ROLE_MANAGER")]
     #[Route('/{id}', name: 'update_inventory', methods: ['PATCH'])]
     public function updateInventory(Request $request, int $id): JsonResponse
     {
@@ -145,6 +150,7 @@ class InventoryController extends AbstractController
      * @param int $id
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_ADMIN")]
     #[Route('/{id}', name: 'delete_inventory', methods: ['DELETE'])]
     public function deleteInventory(int $id): JsonResponse
     {

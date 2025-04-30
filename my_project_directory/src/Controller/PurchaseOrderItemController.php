@@ -12,11 +12,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  *
  */
-#[Route('/purchase-order-item', name: 'purchase_order_item_routes')]
+#[Route('api/purchase-order-item', name: 'purchase_order_item_routes')]
 class PurchaseOrderItemController extends AbstractController
 {
     public const ITEMS_PER_PAGE = 2;
@@ -61,6 +62,7 @@ class PurchaseOrderItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'get_purchase_order_items', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getPurchaseOrderItems(Request $request): JsonResponse
     {
         $requestData = $request->query->all();
@@ -77,6 +79,7 @@ class PurchaseOrderItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'create_purchase_order_item', methods: ['POST'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function createPurchaseOrderItem(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -105,6 +108,7 @@ class PurchaseOrderItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'get_purchase_order_item', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getPurchaseOrderItem(int $id): JsonResponse
     {
         $item = $this->purchaseOrderItemRepository->find($id);
@@ -122,6 +126,7 @@ class PurchaseOrderItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'update_purchase_order_item', methods: ['PATCH'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function updatePurchaseOrderItem(Request $request, int $id): JsonResponse
     {
         $item = $this->purchaseOrderItemRepository->find($id);
@@ -161,6 +166,7 @@ class PurchaseOrderItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'delete_purchase_order_item', methods: ['DELETE'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function deletePurchaseOrderItem(int $id): JsonResponse
     {
         $item = $this->purchaseOrderItemRepository->find($id);

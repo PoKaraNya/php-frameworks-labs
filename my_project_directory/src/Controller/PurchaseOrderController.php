@@ -11,11 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  *
  */
-#[Route('/purchase-order', name: 'purchase_order_routes')]
+#[Route('api/purchase-order', name: 'purchase_order_routes')]
 class PurchaseOrderController extends AbstractController
 {
     public const ITEMS_PER_PAGE = 2;
@@ -50,6 +51,7 @@ class PurchaseOrderController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'get_purchase_orders', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getPurchaseOrders(Request $request): JsonResponse
     {
         $requestData = $request->query->all();
@@ -67,6 +69,7 @@ class PurchaseOrderController extends AbstractController
      * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_purchase_order', methods: ['POST'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function createPurchaseOrder(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -92,6 +95,7 @@ class PurchaseOrderController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'get_purchase_order', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getPurchaseOrder(int $id): JsonResponse
     {
         $purchaseOrder = $this->purchaseOrderRepository->find($id);
@@ -110,6 +114,7 @@ class PurchaseOrderController extends AbstractController
      * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_purchase_order', methods: ['PATCH'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function updatePurchaseOrder(Request $request, int $id): JsonResponse
     {
         $purchaseOrder = $this->purchaseOrderRepository->find($id);
@@ -143,6 +148,7 @@ class PurchaseOrderController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'delete_purchase_order', methods: ['DELETE'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function deletePurchaseOrder(int $id): JsonResponse
     {
         $purchaseOrder = $this->purchaseOrderRepository->find($id);

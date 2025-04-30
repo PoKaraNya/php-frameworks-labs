@@ -267,6 +267,10 @@
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/tymon/jwt-auth" />
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/lcobucci/clock" />
       <path value="$PROJECT_DIR$/Laravel/example-app/vendor/lcobucci/jwt" />
+      <path value="$PROJECT_DIR$/my_project_directory/vendor/namshi/jose" />
+      <path value="$PROJECT_DIR$/my_project_directory/vendor/lcobucci/clock" />
+      <path value="$PROJECT_DIR$/my_project_directory/vendor/lcobucci/jwt" />
+      <path value="$PROJECT_DIR$/my_project_directory/vendor/lexik/jwt-authentication-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">

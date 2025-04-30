@@ -12,11 +12,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  *
  */
-#[Route('/product', name: 'product_routes')]
+#[Route('api/product', name: 'product_routes')]
 class ProductController extends AbstractController
 {
     public const ITEMS_PER_PAGE = 2;
@@ -60,6 +61,7 @@ class ProductController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_USER")]
     #[Route('/', name: 'get_products', methods: ['GET'])]
     public function getProducts(Request $request): JsonResponse
     {
@@ -77,6 +79,7 @@ class ProductController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'create_product', methods: ['POST'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function createProduct(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -106,6 +109,7 @@ class ProductController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'get_product', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getProduct(int $id): JsonResponse
     {
         $product = $this->productRepository->find($id);
@@ -123,6 +127,7 @@ class ProductController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'update_product', methods: ['PATCH'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function updateProduct(Request $request, int $id): JsonResponse
     {
         $product = $this->productRepository->find($id);
@@ -165,6 +170,7 @@ class ProductController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'delete_product', methods: ['DELETE'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function deleteProduct(int $id): JsonResponse
     {
         $product = $this->productRepository->find($id);

@@ -10,11 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  *
  */
-#[Route('/supplier', name: 'supplier_routes')]
+#[Route('api/supplier', name: 'supplier_routes')]
 class SupplierController extends AbstractController
 {
     public const ITEMS_PER_PAGE = 2;
@@ -43,6 +44,7 @@ class SupplierController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'get_suppliers', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getSuppliers(Request $request): JsonResponse
     {
         $requestData = $request->query->all();
@@ -59,6 +61,7 @@ class SupplierController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'create_supplier', methods: ['POST'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function createSupplier(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -81,6 +84,7 @@ class SupplierController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'get_supplier', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getSupplier(int $id): JsonResponse
     {
         $supplier = $this->supplierRepository->find($id);
@@ -98,6 +102,7 @@ class SupplierController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'update_supplier', methods: ['PATCH'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function updateSupplier(Request $request, int $id): JsonResponse
     {
         $supplier = $this->supplierRepository->find($id);
@@ -134,6 +139,7 @@ class SupplierController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'delete_supplier', methods: ['DELETE'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function deleteSupplier(int $id): JsonResponse
     {
         $supplier = $this->supplierRepository->find($id);

@@ -10,11 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  *
  */
-#[Route('/customer', name: 'customer_routes')]
+#[Route('api/customer', name: 'customer_routes')]
 class CustomerController extends AbstractController
 {
     public const ITEMS_PER_PAGE = 2;
@@ -42,6 +43,7 @@ class CustomerController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_USER")]
     #[Route('/', name: 'get_customers', methods: ['GET'])]
     public function getCustomers(Request $request): JsonResponse
     {
@@ -58,6 +60,7 @@ class CustomerController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_MANAGER")]
     #[Route('/', name: 'create_customer', methods: ['POST'])]
     public function createCustomer(Request $request): JsonResponse
     {
@@ -79,6 +82,7 @@ class CustomerController extends AbstractController
      * @param int $id
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_USER")]
     #[Route('/{id}', name: 'get_customer', methods: ['GET'])]
     public function getCustomer(int $id): JsonResponse
     {
@@ -96,6 +100,7 @@ class CustomerController extends AbstractController
      * @param int $id
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_MANAGER")]
     #[Route('/{id}', name: 'update_customer', methods: ['PATCH'])]
     public function updateCustomer(Request $request, int $id): JsonResponse
     {
@@ -129,6 +134,7 @@ class CustomerController extends AbstractController
      * @param int $id
      * @return JsonResponse
      */
+    #[IsGranted("ROLE_ADMIN")]
     #[Route('/{id}', name: 'delete_customer', methods: ['DELETE'])]
     public function deleteCustomer(int $id): JsonResponse
     {

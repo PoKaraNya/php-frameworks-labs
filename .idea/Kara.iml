@@ -260,6 +260,10 @@
       <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/lcobucci/clock" />
       <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/lcobucci/jwt" />
       <excludeFolder url="file://$MODULE_DIR$/Laravel/example-app/vendor/tymon/jwt-auth" />
+      <excludeFolder url="file://$MODULE_DIR$/my_project_directory/vendor/lcobucci/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/my_project_directory/vendor/lcobucci/jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/my_project_directory/vendor/lexik/jwt-authentication-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/my_project_directory/vendor/namshi/jose" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

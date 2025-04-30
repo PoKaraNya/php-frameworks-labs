@@ -11,11 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  *
  */
-#[Route('/shipment', name: 'shipment_routes')]
+#[Route('api/shipment', name: 'shipment_routes')]
 class ShipmentController extends AbstractController
 {
     public const ITEMS_PER_PAGE = 2;
@@ -50,6 +51,7 @@ class ShipmentController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'get_shipments', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getShipments(Request $request): JsonResponse
     {
         $requestData = $request->query->all();
@@ -67,6 +69,7 @@ class ShipmentController extends AbstractController
      * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_shipment', methods: ['POST'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function createShipment(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -93,6 +96,7 @@ class ShipmentController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'get_shipment', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
     public function getShipment(int $id): JsonResponse
     {
         $shipment = $this->shipmentRepository->find($id);
@@ -111,6 +115,7 @@ class ShipmentController extends AbstractController
      * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_shipment', methods: ['PATCH'])]
+    #[IsGranted("ROLE_MANAGER")]
     public function updateShipment(Request $request, int $id): JsonResponse
     {
         $shipment = $this->shipmentRepository->find($id);
@@ -147,6 +152,7 @@ class ShipmentController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id}', name: 'delete_shipment', methods: ['DELETE'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function deleteShipment(int $id): JsonResponse
     {
         $shipment = $this->shipmentRepository->find($id);

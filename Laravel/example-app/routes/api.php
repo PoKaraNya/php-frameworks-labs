@@ -37,7 +37,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-
 Route::middleware(['auth:api', 'role:Admin'])->group(function () {
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
